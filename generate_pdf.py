@@ -394,7 +394,6 @@ Promedio & {average:.2f}/10 \\\\\\\\
 \\vspace{{1cm}}
 \\begin{{center}}
 \\textbf{{Prof. Edgar Ortiz}}\\\\[0.2cm]
-\\small\\textit{{Sistema de Evaluación Automática}}
 \\end{{center}}
 
 \\vfill

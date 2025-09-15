@@ -304,14 +304,19 @@ Errores Compilación & {scores['compilation_errors']} & - & - & \\textcolor{{red
         # Determinar calificación global
         if overall_percentage >= 90:
             grade_color = "\\textcolor{commentgreen}{\\textbf{EXCELENTE}}"
+            grade_text = "EXCELENTE"
         elif overall_percentage >= 80:
             grade_color = "\\textcolor{commentgreen}{\\textbf{BIEN}}"
+            grade_text = "BIEN"
         elif overall_percentage >= 70:
             grade_color = "\\textcolor{scoreorange}{\\textbf{REGULAR}}"
+            grade_text = "REGULAR"
         elif overall_percentage >= 60:
             grade_color = "\\textcolor{scoreorange}{\\textbf{SUFICIENTE}}"
+            grade_text = "SUFICIENTE"
         else:
             grade_color = "\\textcolor{red}{\\textbf{INSUFICIENTE}}"
+            grade_text = "INSUFICIENTE"
         
         # Información sobre programas faltantes
         missing_info = ""
@@ -354,13 +359,81 @@ Calificación & {grade_color} \\\\\\\\
 \\vspace{{1cm}}
 \\begin{{center}}
 \\textbf{{Prof. Edgar Ortiz}}\\\\[0.2cm]
-\\small\\textit{{Sistema de Evaluación Automática de Programas C}}
 \\end{{center}}
 
 \\end{{document}}
 """
     
     return latex
+
+def save_evaluation_results(student_id, program_scores, total_score, total_max_score, program_count, output_dir='.'):
+    """Guarda los resultados de evaluación en formato JSON"""
+    import json
+    
+    # Obtener metadatos
+    metadata = program_scores.get('_metadata', {})
+    penalty_factor = metadata.get('penalty_factor', 1.0)
+    missing_programs = metadata.get('missing_programs', [])
+    
+    # Calcular porcentajes
+    base_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
+    overall_percentage = base_percentage * penalty_factor
+    
+    # Determinar calificación
+    if overall_percentage >= 90:
+        grade = "EXCELENTE"
+    elif overall_percentage >= 80:
+        grade = "BIEN"
+    elif overall_percentage >= 70:
+        grade = "REGULAR"
+    elif overall_percentage >= 60:
+        grade = "SUFICIENTE"
+    else:
+        grade = "INSUFICIENTE"
+    
+    # Crear estructura de datos
+    evaluation_results = {
+        "student_id": student_id,
+        "evaluation_date": datetime.now().isoformat(),
+        "summary": {
+            "total_score": total_score,
+            "max_score": total_max_score,
+            "base_percentage": round(base_percentage, 2),
+            "overall_percentage": round(overall_percentage, 2),
+            "grade": grade,
+            "programs_evaluated": program_count,
+            "programs_expected": metadata.get('total_expected', 4),
+            "penalty_factor": round(penalty_factor, 3),
+            "missing_programs": missing_programs
+        },
+        "program_details": {}
+    }
+    
+    # Agregar detalles por programa
+    for program, scores in program_scores.items():
+        if program != '_metadata':
+            percentage = (scores['total_score'] / scores['max_score'] * 100) if scores['max_score'] > 0 else 0
+            evaluation_results["program_details"][program] = {
+                "exists": scores['exists'],
+                "total_score": scores['total_score'],
+                "max_score": scores['max_score'],
+                "percentage": round(percentage, 2),
+                "tests": scores['tests'],
+                "passed": scores['passed'],
+                "failed": scores['failed'],
+                "compilation_errors": scores['compilation_errors']
+            }
+    
+    # Guardar archivo JSON
+    json_file = os.path.join(output_dir, f"evaluation_results_{student_id}.json")
+    try:
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(evaluation_results, f, indent=2, ensure_ascii=False)
+        print(f"✅ Resultados de evaluación guardados: {json_file}")
+        return json_file
+    except Exception as e:
+        print(f"❌ Error guardando resultados: {e}")
+        return None
 
 def generate_pdf_from_latex(latex_content, output_file):
     """Genera PDF desde LaTeX con timeout"""
@@ -441,6 +514,14 @@ def main():
     # Crear documento LaTeX
     latex_content = create_latex_document(csv_data, program_scores, student_id, output_dir)
     
+    # Calcular totales para guardar en JSON
+    total_score = sum(scores['total_score'] for program, scores in program_scores.items() if program != '_metadata')
+    total_max_score = sum(scores['max_score'] for program, scores in program_scores.items() if program != '_metadata')
+    program_count = sum(1 for program, scores in program_scores.items() if program != '_metadata' and scores['exists'])
+    
+    # Guardar resultados de evaluación en JSON
+    json_file = save_evaluation_results(student_id, program_scores, total_score, total_max_score, program_count, output_dir)
+    
     # Generar PDF en el directorio especificado
     output_file = os.path.join(output_dir, f"testing_{student_id}.pdf")
     if generate_pdf_from_latex(latex_content, output_file):
@@ -451,6 +532,8 @@ def main():
         print(f"   • Estadísticas de compilación y ejecución")
         print(f"   • Detalles de cada prueba individual")
         print(f"   • Resumen general con porcentajes")
+        if json_file:
+            print(f"   • Resultados JSON: {json_file}")
     else:
         print("💥 Error al generar PDF de testing")
 

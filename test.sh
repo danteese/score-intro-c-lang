@@ -117,12 +117,12 @@ test_operaciones() {
         local score=10
         local notes="All operations correct"
         
-        # Check if all expected values are in output
-        if ! echo "$actual_output" | grep -q "la suma da:$expected_sum" || \
-           ! echo "$actual_output" | grep -q "la resta da:$expected_rest" || \
-           ! echo "$actual_output" | grep -q "la multiplicacion da:$expected_mult" || \
-           ! echo "$actual_output" | grep -q "la division da:$expected_div" || \
-           ! echo "$actual_output" | grep -q "residuo:$expected_mod"; then
+        # Check if all expected values are in output (flexible pattern matching)
+        if ! echo "$actual_output" | grep -q "suma.*$expected_sum" || \
+           ! echo "$actual_output" | grep -q "resta.*$expected_rest" || \
+           ! echo "$actual_output" | grep -q "multiplicaci[oó]n.*$expected_mult" || \
+           ! echo "$actual_output" | grep -q "divisi[oó]n.*$expected_div" || \
+           ! echo "$actual_output" | grep -q "residuo.*$expected_mod"; then
             status="FAIL"
             score=0
             notes="One or more operations failed"
