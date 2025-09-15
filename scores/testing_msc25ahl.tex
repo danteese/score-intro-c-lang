@@ -1,0 +1,342 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{selinput}
+\SelectInputMappings{
+  adieresis={ä},
+  eacute={é},
+  ntilde={ñ},
+  uacute={ú},
+  iacute={í},
+  oacute={ó},
+  aacute={á},
+  egrave={è},
+  igrave={ì},
+  ograve={ò},
+  agrave={à},
+  ccedilla={ç},
+  uumlaut={ü},
+  oumlaut={ö},
+  aumlaut={ä}
+}
+\usepackage[letterpaper,top=3cm,bottom=3cm,left=2cm,right=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{adjustbox}
+\usepackage{makecell}
+
+% Sin indentación en párrafos
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Sin indentación en títulos
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{}{0pt}{}
+
+% Sin indentación en listas
+\usepackage{enumitem}
+\setlist{leftmargin=0pt,itemindent=0pt}
+
+% Sin indentación en todo el documento
+\raggedright
+
+% Colores personalizados
+\definecolor{codeblue}{RGB}{41, 128, 185}
+\definecolor{commentgreen}{RGB}{39, 174, 96}
+\definecolor{scoreorange}{RGB}{230, 126, 34}
+\definecolor{headerblue}{RGB}{52, 73, 94}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+
+% Headers y footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\includegraphics[height=1cm]{../public/ibero.png}}
+\fancyhead[R]{\textbf{Reporte de Pruebas de Ejecución}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{35pt}
+
+% Footer positioning - geometry package handles this
+% \setlength{\footskip}{1cm}
+
+\begin{document}
+
+% Título principal
+\begin{center}
+\Large\textbf{\color{headerblue}Reporte de Pruebas de Ejecución}\\[0.5cm]
+\large\textbf{MSC25AHL}\\[0.3cm]
+\normalsize Fecha de evaluación: 15 de September de 2025
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+
+\vspace{0.5cm}
+\section*{\textbf{1.} Operaciones Básicas}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|c|c|c|c}
+\hline
+\rowcolor{lightgray}
+\textbf{Métrica} & \textbf{Valor} & \textbf{Puntuación} & \textbf{Porcentaje} & \textbf{Estado} \\\\
+\hline
+Pruebas Ejecutadas & 5 & - & - & - \\\\
+Pruebas Exitosas & 5 & - & - & \textcolor{commentgreen}{\textbf{PASS}} \\\\
+Pruebas Fallidas & 0 & - & - & \textcolor{red}{\textbf{FAIL}} \\\\
+Errores Compilación & 0 & - & - & \textcolor{red}{\textbf{ERROR}} \\\\
+\hline
+\rowcolor{lightgray}
+\textbf{TOTAL} & \textbf{5} & \textbf{50/50} & \textbf{100.0\%} & \textcolor{commentgreen}{\textbf{50/50 (100.0\%)}} \\\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\vspace{0.5cm}
+\textbf{Resultados Detallados de Pruebas:}\\[0.3cm]
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|p{2.5cm}|p{5cm}|p{5cm}|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{Prueba} & \textbf{Entrada} & \textbf{Esperado} & \textbf{Resultado} & \textbf{Estado} \\
+\hline
+1 & a=10, b=5 & Suma: 15, Resta: 5, Multiplicacion: 50, Division: 2, Residuo: 0 & digite dos valores | la suma da:15 | la resta da:5 | la multiplicacion da:50 | la division da:2 | residuo:0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+2 & a=20, b=4 & Suma: 24, Resta: 16, Multiplicacion: 80, Division: 5, Residuo: 0 & digite dos valores | la suma da:24 | la resta da:16 | la multiplicacion da:80 | la division da:5 | residuo:0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+3 & a=100, b=25 & Suma: 125, Resta: 75, Multiplicacion: 2500, Division: 4, Residuo: 0 & digite dos valores | la suma da:125 | la resta da:75 | la multiplicacion da:2500 | la division da:4 | residuo:0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+4 & a=7, b=3 & Suma: 10, Resta: 4, Multiplicacion: 21, Division: 2, Residuo: 1 & digite dos valores | la suma da:10 | la resta da:4 | la multiplicacion da:21 | la division da:2 | residuo:1 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+5 & a=0, b=5 & Suma: 5, Resta: -5, Multiplicacion: 0, Division: 0, Residuo: 0 & digite dos valores | la suma da:5 | la resta da:-5 | la multiplicacion da:0 | la division da:0 | residuo:0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\end{tabular}
+}%
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.3cm}
+
+
+\vspace{0.5cm}
+\section*{\textbf{2.} Conversión Centímetros a Metros}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|c|c|c|c}
+\hline
+\rowcolor{lightgray}
+\textbf{Métrica} & \textbf{Valor} & \textbf{Puntuación} & \textbf{Porcentaje} & \textbf{Estado} \\\\
+\hline
+Pruebas Ejecutadas & 8 & - & - & - \\\\
+Pruebas Exitosas & 8 & - & - & \textcolor{commentgreen}{\textbf{PASS}} \\\\
+Pruebas Fallidas & 0 & - & - & \textcolor{red}{\textbf{FAIL}} \\\\
+Errores Compilación & 0 & - & - & \textcolor{red}{\textbf{ERROR}} \\\\
+\hline
+\rowcolor{lightgray}
+\textbf{TOTAL} & \textbf{8} & \textbf{80/80} & \textbf{100.0\%} & \textcolor{commentgreen}{\textbf{80/80 (100.0\%)}} \\\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\vspace{0.5cm}
+\textbf{Resultados Detallados de Pruebas:}\\[0.3cm]
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|p{2.5cm}|p{5cm}|p{5cm}|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{Prueba} & \textbf{Entrada} & \textbf{Esperado} & \textbf{Resultado} & \textbf{Estado} \\
+\hline
+1 & 150 & Equivalente: 1 metros y 50 cm & Ingrese números en cm: | Equivalente: 1 metros y 50 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+2 & 100 & Equivalente: 1 metros y 0 cm & Ingrese números en cm: | Equivalente: 1 metros y 0 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+3 & 75 & Equivalente: 0 metros y 75 cm & Ingrese números en cm: | Equivalente: 0 metros y 75 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+4 & 0 & Equivalente: 0 metros y 0 cm & Ingrese números en cm: | Equivalente: 0 metros y 0 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+5 & 2500 & Equivalente: 25 metros y 0 cm & Ingrese números en cm: | Equivalente: 25 metros y 0 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+6 & 2537 & Equivalente: 25 metros y 37 cm & Ingrese números en cm: | Equivalente: 25 metros y 37 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+7 & 99 & Equivalente: 0 metros y 99 cm & Ingrese números en cm: | Equivalente: 0 metros y 99 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+8 & 101 & Equivalente: 1 metros y 1 cm & Ingrese números en cm: | Equivalente: 1 metros y 1 cm & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\end{tabular}
+}%
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.3cm}
+
+
+\vspace{0.5cm}
+\section*{\textbf{3.} Conversión Segundos a Horas-Minutos-Segundos}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|c|c|c|c}
+\hline
+\rowcolor{lightgray}
+\textbf{Métrica} & \textbf{Valor} & \textbf{Puntuación} & \textbf{Porcentaje} & \textbf{Estado} \\\\
+\hline
+Pruebas Ejecutadas & 7 & - & - & - \\\\
+Pruebas Exitosas & 5 & - & - & \textcolor{commentgreen}{\textbf{PASS}} \\\\
+Pruebas Fallidas & 2 & - & - & \textcolor{red}{\textbf{FAIL}} \\\\
+Errores Compilación & 0 & - & - & \textcolor{red}{\textbf{ERROR}} \\\\
+\hline
+\rowcolor{lightgray}
+\textbf{TOTAL} & \textbf{7} & \textbf{50/70} & \textbf{71.4\%} & \textcolor{scoreorange}{\textbf{50/70 (71.4\%)}} \\\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\vspace{0.5cm}
+\textbf{Resultados Detallados de Pruebas:}\\[0.3cm]
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|p{2.5cm}|p{5cm}|p{5cm}|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{Prueba} & \textbf{Entrada} & \textbf{Esperado} & \textbf{Resultado} & \textbf{Estado} \\
+\hline
+1 & 3661 & Horas: 1, Minutos: 1, Segundos: 1 & ingrse sus segundos: | Horas: 1 | Minutos: 1 | Segundos: 1 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+2 & 3600 & Horas: 1, Minutos: 0, Segundos: 0 & ingrse sus segundos: | Horas: 0 | Minutos: 0 | Segundos: 0 & \textcolor{red}{\textbf{FAIL}} \\
+\hline
+3 & 3660 & Horas: 1, Minutos: 1, Segundos: 0 & ingrse sus segundos: | Horas: 1 | Minutos: 1 | Segundos: 0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+4 & 59 & Horas: 0, Minutos: 0, Segundos: 59 & ingrse sus segundos: | Horas: 0 | Minutos: 0 | Segundos: 59 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+5 & 0 & Horas: 0, Minutos: 0, Segundos: 0 & ingrse sus segundos: | Horas: 0 | Minutos: 0 | Segundos: 0 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\rowcolor{lightgray}
+6 & 7200 & Horas: 2, Minutos: 0, Segundos: 0 & ingrse sus segundos: | Horas: 0 | Minutos: 0 | Segundos: 0 & \textcolor{red}{\textbf{FAIL}} \\
+\hline
+7 & 7323 & Horas: 2, Minutos: 2, Segundos: 3 & ingrse sus segundos: | Horas: 2 | Minutos: 2 | Segundos: 3 & \textcolor{commentgreen}{\textbf{PASS}} \\
+\hline
+\end{tabular}
+}%
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.3cm}
+
+
+\vspace{0.5cm}
+\section*{\textbf{4.} Cálculo de Resistencia Eléctrica}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|c|c|c|c}
+\hline
+\rowcolor{lightgray}
+\textbf{Métrica} & \textbf{Valor} & \textbf{Puntuación} & \textbf{Porcentaje} & \textbf{Estado} \\\\
+\hline
+Pruebas Ejecutadas & 0 & - & - & - \\\\
+Pruebas Exitosas & 0 & - & - & \textcolor{commentgreen}{\textbf{PASS}} \\\\
+Pruebas Fallidas & 0 & - & - & \textcolor{red}{\textbf{FAIL}} \\\\
+Errores Compilación & 0 & - & - & \textcolor{red}{\textbf{ERROR}} \\\\
+\hline
+\rowcolor{lightgray}
+\textbf{TOTAL} & \textbf{0} & \textbf{0/0} & \textbf{0.0\%} & \textcolor{red}{\textbf{0/0 (0.0\%)}} \\\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\vspace{0.5cm}
+\textbf{Resultados Detallados de Pruebas:}\\[0.3cm]
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|p{2.5cm}|p{5cm}|p{5cm}|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{Prueba} & \textbf{Entrada} & \textbf{Esperado} & \textbf{Resultado} & \textbf{Estado} \\
+\hline
+1 & N/A & N/A & N/A & \textcolor{red}{\textbf{FAIL}} \\
+\hline
+\end{tabular}
+}%
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.3cm}
+
+
+\vspace{1cm}
+\section*{\textbf{Resumen General de Ejecución}}
+
+\begin{center}
+\begin{tabular}{l r}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\\\
+\midrule
+Puntuación Total & 180/200 puntos \\\\
+Porcentaje Base & 90.0\% \\\\
+Programas Evaluados & 4/4 \\\\
+\\\midrule
+Programas Faltantes & resistencia \\\\
+Penalización Aplicada & 25.0\% \\\\
+\midrule
+\textbf{Porcentaje Final} & \textbf{67.5\%} \\\\
+Calificación & \textcolor{scoreorange}{\textbf{SUFICIENTE}} \\\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\begin{center}
+\textbf{Interpretación de Calificaciones:}\\[0.3cm]
+\begin{itemize}
+\item \textcolor{commentgreen}{\textbf{90-100\%: EXCELENTE}} - Todos los programas funcionan perfectamente
+\item \textcolor{commentgreen}{\textbf{80-89\%: BIEN}} - La mayoría de programas funcionan correctamente
+\item \textcolor{scoreorange}{\textbf{70-79\%: REGULAR}} - Algunos programas necesitan corrección
+\item \textcolor{scoreorange}{\textbf{60-69\%: SUFICIENTE}} - Varios programas requieren mejoras
+\item \textcolor{red}{\textbf{0-59\%: INSUFICIENTE}} - Necesita revisar y corregir los programas
+\end{itemize}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\textbf{Prof. Edgar Ortiz}\\[0.2cm]
+\small\textit{Sistema de Evaluación Automática de Programas C}
+\end{center}
+
+\end{document}

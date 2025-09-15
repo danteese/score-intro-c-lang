@@ -23,6 +23,103 @@ def load_score_data(json_file):
         print(f"Error al parsear JSON: {e}")
         return None
 
+def clean_unicode_for_latex(text):
+    """Limpia caracteres Unicode problemáticos y los reemplaza con comandos LaTeX"""
+    if not text:
+        return text
+    
+    # Reemplazar caracteres Unicode comunes con comandos LaTeX
+    replacements = {
+        'π': r'$\pi$',
+        'α': r'$\alpha$',
+        'β': r'$\beta$',
+        'γ': r'$\gamma$',
+        'δ': r'$\delta$',
+        'ε': r'$\varepsilon$',
+        'θ': r'$\theta$',
+        'λ': r'$\lambda$',
+        'μ': r'$\mu$',
+        'σ': r'$\sigma$',
+        'τ': r'$\tau$',
+        'φ': r'$\phi$',
+        'ψ': r'$\psi$',
+        'ω': r'$\omega$',
+        '∞': r'$\infty$',
+        '≤': r'$\leq$',
+        '≥': r'$\geq$',
+        '≠': r'$\neq$',
+        '±': r'$\pm$',
+        '×': r'$\times$',
+        '÷': r'$\div$',
+        '∑': r'$\sum$',
+        '∏': r'$\prod$',
+        '∫': r'$\int$',
+        '√': r'$\sqrt{}$',
+        '≈': r'$\approx$',
+        '→': r'$\rightarrow$',
+        '←': r'$\leftarrow$',
+        '↔': r'$\leftrightarrow$',
+        '⇒': r'$\Rightarrow$',
+        '⇐': r'$\Leftarrow$',
+        '⇔': r'$\Leftrightarrow$',
+        '∈': r'$\in$',
+        '∉': r'$\notin$',
+        '⊂': r'$\subset$',
+        '⊃': r'$\supset$',
+        '⊆': r'$\subseteq$',
+        '⊇': r'$\supseteq$',
+        '∪': r'$\cup$',
+        '∩': r'$\cap$',
+        '∅': r'$\emptyset$',
+        '∀': r'$\forall$',
+        '∃': r'$\exists$',
+        '∇': r'$\nabla$',
+        '∂': r'$\partial$',
+        '∆': r'$\Delta$',
+        'Ω': r'$\Omega$',
+        'Φ': r'$\Phi$',
+        'Ψ': r'$\Psi$',
+        'Σ': r'$\Sigma$',
+        'Π': r'$\Pi$',
+        'Γ': r'$\Gamma$',
+        'Λ': r'$\Lambda$',
+        'Θ': r'$\Theta$',
+        'Ξ': r'$\Xi$',
+        'Υ': r'$\Upsilon$',
+        'Ζ': r'$\Zeta$',
+        'Η': r'$\Eta$',
+        'Δ': r'$\Delta$',
+        'Α': r'$\Alpha$',
+        'Β': r'$\Beta$',
+        'Γ': r'$\Gamma$',
+        'Ε': r'$\Epsilon$',
+        'Ζ': r'$\Zeta$',
+        'Η': r'$\Eta$',
+        'Θ': r'$\Theta$',
+        'Ι': r'$\Iota$',
+        'Κ': r'$\Kappa$',
+        'Λ': r'$\Lambda$',
+        'Μ': r'$\Mu$',
+        'Ν': r'$\Nu$',
+        'Ξ': r'$\Xi$',
+        'Ο': r'$\Omicron$',
+        'Π': r'$\Pi$',
+        'Ρ': r'$\Rho$',
+        'Σ': r'$\Sigma$',
+        'Τ': r'$\Tau$',
+        'Υ': r'$\Upsilon$',
+        'Φ': r'$\Phi$',
+        'Χ': r'$\Chi$',
+        'Ψ': r'$\Psi$',
+        'Ω': r'$\Omega$'
+    }
+    
+    result = text
+    for unicode_char, latex_cmd in replacements.items():
+        result = result.replace(unicode_char, latex_cmd)
+    
+    return result
+
 def format_comments_with_bullets(comments):
     """Formatea los comentarios para mostrar bullet points correctamente en LaTeX"""
     if not comments:
@@ -134,17 +231,20 @@ def create_latex_document(score_data, student_id, output_dir='.'):
   oumlaut={{ö}},
   aumlaut={{ä}}
 }}
-\\usepackage[letterpaper,top=3cm,bottom=2cm,left=2cm,right=2cm]{{geometry}}
+\\usepackage[letterpaper,top=3cm,bottom=3cm,left=2cm,right=2cm]{{geometry}}
 \\usepackage{{xcolor}}
 \\usepackage{{graphicx}}
 \\usepackage{{fancyhdr}}
 \\usepackage{{listings}}
 \\usepackage{{booktabs}}
 \\usepackage{{array}}
+\\usepackage{{setspace}}
 
 % Sin indentación en párrafos
 \\setlength{{\\parindent}}{{0pt}}
 \\setlength{{\\parskip}}{{0.5em}}
+
+% Control directo del espacio inferior - REMOVED (conflicts with geometry)
 
 % Sin indentación en títulos
 \\usepackage{{titlesec}}
@@ -196,6 +296,9 @@ def create_latex_document(score_data, student_id, output_dir='.'):
 \\renewcommand{{\\footrulewidth}}{{0pt}}
 \\setlength{{\\headheight}}{{35pt}}
 
+% Footer positioning - geometry package handles this
+% \\setlength{{\\footskip}}{{1cm}}
+
 \\begin{{document}}
 
 % Título principal
@@ -246,8 +349,9 @@ def create_latex_document(score_data, student_id, output_dir='.'):
             # Capitalizar correctamente el nombre del ejercicio
             exercise_name = exercise.replace('conversionCmsMts', 'ConversionCmsMts').replace('conversionSegHMS', 'ConversionSegHMS').capitalize()
             
-            # Procesar comentarios para formatear bullet points
-            formatted_comments = format_comments_with_bullets(comments)
+            # Limpiar caracteres Unicode y procesar comentarios para formatear bullet points
+            clean_comments = clean_unicode_for_latex(comments)
+            formatted_comments = format_comments_with_bullets(clean_comments)
             
             latex += f"""
 \\section*{{{symbol} {exercise_name}.c}}
@@ -264,7 +368,7 @@ def create_latex_document(score_data, student_id, output_dir='.'):
 
 \\vspace{{0.5cm}}
 \\hrule
-\\vspace{{0.3cm}}
+\\vspace{{0.5cm}}
 
 """
             total_score += score
@@ -293,6 +397,9 @@ Promedio & {average:.2f}/10 \\\\\\\\
 \\small\\textit{{Sistema de Evaluación Automática}}
 \\end{{center}}
 
+\\vfill
+\\vspace{{3cm}}
+
 \\end{{document}}
 """
     
@@ -308,22 +415,23 @@ def generate_pdf_from_latex(latex_content, output_file):
         
         # Compilar con pdflatex (soporte completo para diacríticos con lmodern)
         print("Compilando LaTeX con pdflatex...")
-        # Cambiar al directorio del archivo para que LaTeX encuentre las imágenes
+        # Usar el directorio de salida directamente
         output_dir = os.path.dirname(output_file)
         tex_filename = os.path.basename(tex_file)
-        cmd = ['pdflatex', '-interaction=nonstopmode', '-output-directory', output_dir, tex_filename]
         
-        # Cambiar al directorio del archivo .tex para que LaTeX encuentre las imágenes
+        # Cambiar al directorio de salida para que LaTeX genere archivos ahí
         original_cwd = os.getcwd()
-        os.chdir(os.path.dirname(tex_file))
+        os.chdir(output_dir)
         
-        # Ejecutar con timeout
+        # Ejecutar pdflatex en el directorio de salida
+        cmd = ['pdflatex', '-interaction=nonstopmode', tex_filename]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, encoding='utf-8', errors='replace')
         
         # Volver al directorio original
         os.chdir(original_cwd)
         
         # Verificar si el PDF fue generado exitosamente
+        # El PDF se genera en el directorio de salida especificado
         if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
             print(f"✅ PDF generado exitosamente: {output_file}")
             # Limpiar archivos auxiliares (mantener .tex para debugging)
@@ -334,8 +442,14 @@ def generate_pdf_from_latex(latex_content, output_file):
             return True
         else:
             print(f"❌ Error al compilar LaTeX:")
+            print(f"   Archivo esperado: {output_file}")
+            print(f"   Archivo existe: {os.path.exists(output_file)}")
+            if os.path.exists(output_file):
+                print(f"   Tamaño del archivo: {os.path.getsize(output_file)} bytes")
             if result.stderr:
-                print(result.stderr[-500:])  # Mostrar últimos 500 caracteres del error
+                print(f"   Error stderr: {result.stderr[-500:]}")
+            if result.stdout:
+                print(f"   Salida stdout: {result.stdout[-500:]}")
             return False
             
     except subprocess.TimeoutExpired:

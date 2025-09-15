@@ -1,0 +1,76 @@
+Student_ID,Program_Name,Test_Type,Input_Values,Expected_Result,Actual_Result,Test_Status,Compilation_Status,Error_Details,Test_Score,Notes
+msc25ahl,operaciones.c,OPERATIONS,"a=10, b=5","Suma: 15, Resta: 5, Multiplicacion: 50, Division: 2, Residuo: 0","digite dos valores
+la suma da:15
+la resta da:5
+la multiplicacion da:50
+la division da:2
+residuo:0",PASS,COMPILED,,10,Basic arithmetic test
+msc25ahl,operaciones.c,OPERATIONS,"a=20, b=4","Suma: 24, Resta: 16, Multiplicacion: 80, Division: 5, Residuo: 0","digite dos valores
+la suma da:24
+la resta da:16
+la multiplicacion da:80
+la division da:5
+residuo:0",PASS,COMPILED,,10,Positive numbers test
+msc25ahl,operaciones.c,OPERATIONS,"a=100, b=25","Suma: 125, Resta: 75, Multiplicacion: 2500, Division: 4, Residuo: 0","digite dos valores
+la suma da:125
+la resta da:75
+la multiplicacion da:2500
+la division da:4
+residuo:0",PASS,COMPILED,,10,Large numbers test
+msc25ahl,operaciones.c,OPERATIONS,"a=7, b=3","Suma: 10, Resta: 4, Multiplicacion: 21, Division: 2, Residuo: 1","digite dos valores
+la suma da:10
+la resta da:4
+la multiplicacion da:21
+la division da:2
+residuo:1",PASS,COMPILED,,10,Small numbers test
+msc25ahl,operaciones.c,OPERATIONS,"a=0, b=5","Suma: 5, Resta: -5, Multiplicacion: 0, Division: 0, Residuo: 0","digite dos valores
+la suma da:5
+la resta da:-5
+la multiplicacion da:0
+la division da:0
+residuo:0",PASS,COMPILED,,10,Zero handling test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,150,"Equivalente: 1 metros y 50 cm","Ingrese números en cm:
+Equivalente: 1 metros y 50 cm",PASS,COMPILED,,10,Normal conversion test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,100,"Equivalente: 1 metros y 0 cm","Ingrese números en cm:
+Equivalente: 1 metros y 0 cm",PASS,COMPILED,,10,Exact meter boundary test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,75,"Equivalente: 0 metros y 75 cm","Ingrese números en cm:
+Equivalente: 0 metros y 75 cm",PASS,COMPILED,,10,Less than meter test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,0,"Equivalente: 0 metros y 0 cm","Ingrese números en cm:
+Equivalente: 0 metros y 0 cm",PASS,COMPILED,,10,Zero input test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,2500,"Equivalente: 25 metros y 0 cm","Ingrese números en cm:
+Equivalente: 25 metros y 0 cm",PASS,COMPILED,,10,Multiple meters test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,2537,"Equivalente: 25 metros y 37 cm","Ingrese números en cm:
+Equivalente: 25 metros y 37 cm",PASS,COMPILED,,10,Complex conversion test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,99,"Equivalente: 0 metros y 99 cm","Ingrese números en cm:
+Equivalente: 0 metros y 99 cm",PASS,COMPILED,,10,Boundary below meter test
+msc25ahl,conversionCmsMts.c,CONVERSION_CM_MT,101,"Equivalente: 1 metros y 1 cm","Ingrese números en cm:
+Equivalente: 1 metros y 1 cm",PASS,COMPILED,,10,Boundary above meter test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,3661,"Horas: 1, Minutos: 1, Segundos: 1","ingrse sus segundos:
+Horas: 1
+Minutos: 1
+Segundos: 1",PASS,COMPILED,,10,Complex time conversion test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,3600,"Horas: 1, Minutos: 0, Segundos: 0","ingrse sus segundos:
+Horas: 0
+Minutos: 0
+Segundos: 0",FAIL,COMPILED,,0,Exact hour boundary test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,3660,"Horas: 1, Minutos: 1, Segundos: 0","ingrse sus segundos:
+Horas: 1
+Minutos: 1
+Segundos: 0",PASS,COMPILED,,10,Minute boundary test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,59,"Horas: 0, Minutos: 0, Segundos: 59","ingrse sus segundos:
+Horas: 0
+Minutos: 0
+Segundos: 59",PASS,COMPILED,,10,Less than minute test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,0,"Horas: 0, Minutos: 0, Segundos: 0","ingrse sus segundos:
+Horas: 0
+Minutos: 0
+Segundos: 0",PASS,COMPILED,,10,Zero input test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,7200,"Horas: 2, Minutos: 0, Segundos: 0","ingrse sus segundos:
+Horas: 0
+Minutos: 0
+Segundos: 0",FAIL,COMPILED,,0,Multiple hours test
+msc25ahl,conversionSegsHMS.c,CONVERSION_SEGS_HMS,7323,"Horas: 2, Minutos: 2, Segundos: 3","ingrse sus segundos:
+Horas: 2
+Minutos: 2
+Segundos: 3",PASS,COMPILED,,10,Complex time test
+msc25ahl,resistencia.c,FILE_NOT_FOUND,N/A,N/A,N/A,FAIL,NO_FILE,File not found,0,Missing program file
