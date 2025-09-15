@@ -7,6 +7,9 @@ _logs/
 # Ignore any JSON files (student data)
 *.json
 
+*.pdf
+*.tex
+
 # Ignore any temporary files
 *.tmp
 *.temp
