@@ -16,7 +16,14 @@ _logs/
 *.exe
 *.out
 
+*.pdf
+*.html
+*.md
+
 # Ignore any backup files
 *~
 *.bak
 *.backup
+
+__pycache__/
+.DS_Store
