@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import subprocess
+import argparse
 from datetime import datetime
 from pathlib import Path
 
@@ -100,8 +101,14 @@ def format_comments_with_bullets(comments):
         # Si no hay items, devolver como párrafo normal con saltos de línea
         return '\\\\\n'.join(formatted_lines)
 
-def create_latex_document(score_data, student_id):
+def create_latex_document(score_data, student_id, output_dir='.'):
     """Crea un documento LaTeX estético"""
+    
+    # Determinar la ruta correcta de la imagen basada en el directorio de salida
+    if output_dir == '.' or output_dir == '':
+        image_path = "public/ibero.png"
+    else:
+        image_path = "../public/ibero.png"
     
     latex = f"""\\documentclass[11pt]{{article}}
 \\usepackage[utf8]{{inputenc}}
@@ -182,12 +189,12 @@ def create_latex_document(score_data, student_id):
 % Headers y footers
 \\pagestyle{{fancy}}
 \\fancyhf{{}}
-\\fancyhead[L]{{\\includegraphics[height=1cm]{{public/ibero.png}}}}
+\\fancyhead[L]{{\\includegraphics[height=1cm]{{{image_path}}}}}
 \\fancyhead[R]{{\\textbf{{Reporte de Calificaciones}}}}
 \\fancyfoot[C]{{\\thepage}}
 \\renewcommand{{\\headrulewidth}}{{0pt}}
 \\renewcommand{{\\footrulewidth}}{{0pt}}
-\\setlength{{\\headheight}}{{15pt}}
+\\setlength{{\\headheight}}{{35pt}}
 
 \\begin{{document}}
 
@@ -219,14 +226,14 @@ def create_latex_document(score_data, student_id):
             score = score_data[exercise_key].get('calificacion', 0)
             comments = score_data[exercise_key].get('comentarios', 'Sin comentarios')
             
-            # Determinar símbolo según el ejercicio
+            # Determinar símbolo según el ejercicio (usando símbolos LaTeX compatibles)
             exercise_symbols = {
-                'operaciones': '⚙',
-                'resistencia': '⚡',
-                'conversionCmsMts': '📏',
-                'conversionSegHMS': '🕐'
+                'operaciones': '\\textbf{1.}',
+                'resistencia': '\\textbf{2.}',
+                'conversionCmsMts': '\\textbf{3.}',
+                'conversionSegHMS': '\\textbf{4.}'
             }
-            symbol = exercise_symbols.get(exercise, '💻')
+            symbol = exercise_symbols.get(exercise, '\\textbf{5.}')
             
             # Determinar color de calificación
             if score >= 8:
@@ -267,7 +274,7 @@ def create_latex_document(score_data, student_id):
     if exercise_count > 0:
         average = total_score / exercise_count
         latex += f"""
-\\section*{{🏆 Resumen General}}
+\\section*{{\\textbf{{Resumen General}}}}
 
 \\begin{{center}}
 \\begin{{tabular}}{{l r}}
@@ -294,23 +301,33 @@ Promedio & {average:.2f}/10 \\\\\\\\
 def generate_pdf_from_latex(latex_content, output_file):
     """Genera PDF desde LaTeX con timeout"""
     try:
-        # Crear archivo .tex temporal
+        # Crear archivo .tex temporal en el mismo directorio que el PDF
         tex_file = output_file.replace('.pdf', '.tex')
         with open(tex_file, 'w', encoding='utf-8', errors='ignore') as f:
             f.write(latex_content)
         
         # Compilar con pdflatex (soporte completo para diacríticos con lmodern)
         print("Compilando LaTeX con pdflatex...")
-        cmd = ['pdflatex', '-interaction=nonstopmode', tex_file]
+        # Cambiar al directorio del archivo para que LaTeX encuentre las imágenes
+        output_dir = os.path.dirname(output_file)
+        tex_filename = os.path.basename(tex_file)
+        cmd = ['pdflatex', '-interaction=nonstopmode', '-output-directory', output_dir, tex_filename]
+        
+        # Cambiar al directorio del archivo .tex para que LaTeX encuentre las imágenes
+        original_cwd = os.getcwd()
+        os.chdir(os.path.dirname(tex_file))
         
         # Ejecutar con timeout
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, encoding='utf-8', errors='replace')
         
+        # Volver al directorio original
+        os.chdir(original_cwd)
+        
         # Verificar si el PDF fue generado exitosamente
         if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
             print(f"✅ PDF generado exitosamente: {output_file}")
-            # Limpiar archivos auxiliares
-            for ext in ['.aux', '.log', '.tex']:
+            # Limpiar archivos auxiliares (mantener .tex para debugging)
+            for ext in ['.aux', '.log']:
                 aux_file = output_file.replace('.pdf', ext)
                 if os.path.exists(aux_file):
                     os.remove(aux_file)
@@ -329,12 +346,14 @@ def generate_pdf_from_latex(latex_content, output_file):
         return False
 
 def main():
-    if len(sys.argv) != 2:
-        print("Uso: python generate_aesthetic_pdf.py <archivo.json>")
-        print("Ejemplo: python generate_aesthetic_pdf.py msc25ahl.json")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Generador de PDFs estéticos con logo y fuentes monospace')
+    parser.add_argument('json_file', help='Archivo JSON con las calificaciones')
+    parser.add_argument('-o', '--output-dir', default='.', help='Directorio de salida para el PDF (por defecto: directorio actual)')
     
-    json_file = sys.argv[1]
+    args = parser.parse_args()
+    
+    json_file = args.json_file
+    output_dir = args.output_dir
     student_id = Path(json_file).stem
     
     # Cargar datos
@@ -344,11 +363,14 @@ def main():
     
     print(f"🎓 Generando PDF estético para: {student_id}")
     
-    # Crear documento LaTeX
-    latex_content = create_latex_document(score_data, student_id)
+    # Crear directorio de salida si no existe
+    os.makedirs(output_dir, exist_ok=True)
     
-    # Generar PDF
-    output_file = f"calificaciones_{student_id}.pdf"
+    # Crear documento LaTeX
+    latex_content = create_latex_document(score_data, student_id, output_dir)
+    
+    # Generar PDF en el directorio especificado
+    output_file = os.path.join(output_dir, f"calificaciones_{student_id}.pdf")
     if generate_pdf_from_latex(latex_content, output_file):
         print(f"🎉 ¡PDF generado exitosamente: {output_file}")
         print(f"📄 El archivo incluye:")

@@ -65,8 +65,11 @@ else
     replace_code "$TEMP_PROMPT" "" "conversionSegHMS.c"
 fi
 
-# Ejecutar llm con schema y guardar JSON
-JSON_FILE="${student}.json"
+# Crear directorio scores si no existe
+mkdir -p scores
+
+# Ejecutar llm con schema y guardar JSON en scores/
+JSON_FILE="scores/${student}.json"
 
 # Schema para validación JSON
 SCHEMA='{
@@ -134,16 +137,16 @@ echo ""
 
 # Generar PDF estético
 echo "Generando PDF estético..."
-if [ ! -f "generate_aesthetic_pdf.py" ]; then
-    echo "❌ Error: generate_aesthetic_pdf.py no encontrado"
+if [ ! -f "generate_pdf.py" ]; then
+    echo "❌ Error: generate_pdf.py no encontrado"
     rm "$TEMP_PROMPT"
     exit 1
 fi
 
-python3 generate_aesthetic_pdf.py "$JSON_FILE"
+python3 generate_pdf.py "$JSON_FILE" -o scores/
 
 # Verificar que el PDF se generó
-PDF_FILE="calificaciones_${student}.pdf"
+PDF_FILE="scores/calificaciones_${student}.pdf"
 if [ -f "$PDF_FILE" ]; then
     echo "✅ PDF generado exitosamente: $PDF_FILE"
 else
@@ -165,3 +168,4 @@ if [ -f "$PDF_FILE" ]; then
 fi
 echo ""
 echo "✨ Proceso completado exitosamente"
+echo "📁 Todos los archivos (JSON y PDF) se guardan en el directorio 'scores/' para fácil acceso"
