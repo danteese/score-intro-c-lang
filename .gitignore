@@ -1,0 +1,22 @@
+# Ignore all student directories
+msc25*/
+
+# Ignore logs directory
+_logs/
+
+# Ignore any JSON files (student data)
+*.json
+
+# Ignore any temporary files
+*.tmp
+*.temp
+
+# Ignore compiled C files
+*.o
+*.exe
+*.out
+
+# Ignore any backup files
+*~
+*.bak
+*.backup
