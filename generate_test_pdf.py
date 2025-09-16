@@ -18,8 +18,22 @@ def load_csv_data(csv_file):
     try:
         data = []
         with open(csv_file, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
+            # Use csv.Sniffer to detect delimiter and handle malformed CSV
+            sample = f.read(1024)
+            f.seek(0)
+            
+            try:
+                sniffer = csv.Sniffer()
+                delimiter = sniffer.sniff(sample).delimiter
+            except:
+                delimiter = ','  # Default to comma if detection fails
+            
+            reader = csv.DictReader(f, delimiter=delimiter)
+            for row_num, row in enumerate(reader, 1):
+                # Skip malformed rows (rows with wrong number of fields)
+                if len(row) < 10:  # Expected number of CSV columns
+                    print(f"⚠️  Advertencia: Saltando fila {row_num} malformada en CSV")
+                    continue
                 data.append(row)
         return data
     except FileNotFoundError:
@@ -38,7 +52,14 @@ def calculate_program_scores(csv_data):
     
     for row in csv_data:
         program = row['Program_Name']
-        test_score = int(row.get('Test_Score', 0))
+        
+        # Handle Test_Score conversion safely
+        try:
+            test_score = int(row.get('Test_Score', 0))
+        except (ValueError, TypeError):
+            # If Test_Score is not a valid integer, default to 0
+            test_score = 0
+        
         status = row['Test_Status']
         compilation_status = row['Compilation_Status']
         

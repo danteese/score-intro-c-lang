@@ -23,13 +23,63 @@ def load_score_data(json_file):
         print(f"Error al parsear JSON: {e}")
         return None
 
-def clean_unicode_for_latex(text):
-    """Limpia caracteres Unicode problemáticos y los reemplaza con comandos LaTeX"""
+def fix_concatenated_text(text):
+    """Arregla texto concatenado común en los comentarios"""
     if not text:
         return text
     
-    # Reemplazar caracteres Unicode comunes con comandos LaTeX
-    replacements = {
+    import re
+    
+    # Patrones específicos de texto concatenado encontrados en los comentarios
+    fixes = [
+        # Patrones específicos del texto de resistencia
+        (r'Efectivamentenoseestámostrandoelresultadoporque', 'Efectivamente no se está mostrando el resultado porque'),
+        (r'faltala funcióndeimpresiónparamostrarlaresistenciacalculada', 'falta la función de impresión para mostrar la resistencia calculada'),
+        (r'lasvariablesdeberíandeclararsealprincipiodelbloqueyseríaidealincluirmáscomentarios', 'las variables deberían declararse al principio del bloque y sería ideal incluir más comentarios'),
+        # Patrones generales para palabras concatenadas
+        (r'(\w)([A-ZÁÉÍÓÚÑ])', r'\1 \2'),  # Espacio antes de mayúsculas
+        (r'(\w)([a-záéíóúñ])([A-ZÁÉÍÓÚÑ])', r'\1\2 \3'),  # Espacio entre camelCase
+    ]
+    
+    result = text
+    for pattern, replacement in fixes:
+        result = re.sub(pattern, replacement, result)
+    
+    # Limpiar espacios múltiples
+    result = re.sub(r'\s+', ' ', result)
+    
+    return result
+
+def clean_unicode_for_latex(text):
+    """Limpia caracteres Unicode problemáticos y los reemplaza con comandos LaTeX"""
+    if not text or text.strip() == '':
+        return "Sin comentarios"
+    
+    # Convertir a string si no lo es
+    text = str(text)
+    
+    # Arreglar texto concatenado primero
+    text = fix_concatenated_text(text)
+    
+    # Reemplazar caracteres especiales en orden específico para evitar doble escape
+    # Primero los backslashes para evitar conflictos
+    text = text.replace('\\', r'\textbackslash{}')
+    
+    # Luego los otros caracteres especiales
+    text = text.replace('"', r'\"')
+    text = text.replace('&', r'\&')
+    text = text.replace('%', r'\%')
+    text = text.replace('$', r'\$')
+    text = text.replace('#', r'\#')
+    text = text.replace('^', r'\textasciicircum{}')
+    text = text.replace('_', r'\_')
+    text = text.replace('{', r'\{')
+    text = text.replace('}', r'\}')
+    text = text.replace('~', r'\textasciitilde{}')
+    
+    # Reemplazar caracteres Unicode matemáticos
+    unicode_replacements = {
+        # Caracteres Unicode matemáticos
         'π': r'$\pi$',
         'α': r'$\alpha$',
         'β': r'$\beta$',
@@ -91,39 +141,33 @@ def clean_unicode_for_latex(text):
         'Δ': r'$\Delta$',
         'Α': r'$\Alpha$',
         'Β': r'$\Beta$',
-        'Γ': r'$\Gamma$',
         'Ε': r'$\Epsilon$',
-        'Ζ': r'$\Zeta$',
-        'Η': r'$\Eta$',
-        'Θ': r'$\Theta$',
         'Ι': r'$\Iota$',
         'Κ': r'$\Kappa$',
-        'Λ': r'$\Lambda$',
         'Μ': r'$\Mu$',
         'Ν': r'$\Nu$',
-        'Ξ': r'$\Xi$',
         'Ο': r'$\Omicron$',
-        'Π': r'$\Pi$',
         'Ρ': r'$\Rho$',
-        'Σ': r'$\Sigma$',
         'Τ': r'$\Tau$',
-        'Υ': r'$\Upsilon$',
-        'Φ': r'$\Phi$',
-        'Χ': r'$\Chi$',
-        'Ψ': r'$\Psi$',
-        'Ω': r'$\Omega$'
+        'Χ': r'$\Chi$'
     }
     
-    result = text
-    for unicode_char, latex_cmd in replacements.items():
-        result = result.replace(unicode_char, latex_cmd)
+    for unicode_char, latex_cmd in unicode_replacements.items():
+        text = text.replace(unicode_char, latex_cmd)
     
-    return result
+    return text
 
 def format_comments_with_bullets(comments):
     """Formatea los comentarios para mostrar bullet points correctamente en LaTeX"""
-    if not comments:
+    if not comments or comments.strip() == '':
         return "Sin comentarios"
+    
+    # Convertir a string si no lo es y limpiar
+    comments = str(comments).strip()
+    
+    # Si no hay bullet points, devolver el texto como está (preservando espacios)
+    if not ('- ' in comments or '•' in comments):
+        return comments
     
     # Primero, dividir por líneas reales
     lines = comments.split('\n')
@@ -329,6 +373,10 @@ def create_latex_document(score_data, student_id, output_dir='.'):
             score = score_data[exercise_key].get('calificacion', 0)
             comments = score_data[exercise_key].get('comentarios', 'Sin comentarios')
             
+            # Validar y limpiar comentarios
+            if not comments or comments == '' or comments.strip() == '':
+                comments = 'Sin comentarios'
+            
             # Determinar símbolo según el ejercicio (usando símbolos LaTeX compatibles)
             exercise_symbols = {
                 'operaciones': '\\textbf{1.}',
@@ -350,8 +398,12 @@ def create_latex_document(score_data, student_id, output_dir='.'):
             exercise_name = exercise.replace('conversionCmsMts', 'ConversionCmsMts').replace('conversionSegHMS', 'ConversionSegHMS').capitalize()
             
             # Limpiar caracteres Unicode y procesar comentarios para formatear bullet points
-            clean_comments = clean_unicode_for_latex(comments)
-            formatted_comments = format_comments_with_bullets(clean_comments)
+            try:
+                clean_comments = clean_unicode_for_latex(comments)
+                formatted_comments = format_comments_with_bullets(clean_comments)
+            except Exception as e:
+                print(f"⚠️  Error procesando comentarios para {exercise}: {e}")
+                formatted_comments = "Sin comentarios"
             
             latex += f"""
 \\section*{{{symbol} {exercise_name}.c}}
@@ -440,7 +492,7 @@ def generate_pdf_from_latex(latex_content, output_file):
                     os.remove(aux_file)
             return True
         else:
-            print(f"❌ Error al compilar LaTeX:")
+            print("❌ Error al compilar LaTeX:")
             print(f"   Archivo esperado: {output_file}")
             print(f"   Archivo existe: {os.path.exists(output_file)}")
             if os.path.exists(output_file):
@@ -486,16 +538,16 @@ def main():
     output_file = os.path.join(output_dir, f"calificaciones_{student_id}.pdf")
     if generate_pdf_from_latex(latex_content, output_file):
         print(f"🎉 ¡PDF generado exitosamente: {output_file}")
-        print(f"📄 El archivo incluye:")
-        print(f"   • Logo de la universidad (tamaño optimizado)")
-        print(f"   • Fuente Computer Modern (soporte completo para español)")
-        print(f"   • Configuración de página optimizada (sin overflow)")
-        print(f"   • Sin indentación en párrafos, títulos y comentarios")
-        print(f"   • Comentarios sin marco (más limpio)")
-        print(f"   • Colores diferenciados por calificación")
-        print(f"   • Símbolos para cada ejercicio")
-        print(f"   • Firma del Prof. Edgar Ortiz")
-        print(f"   • Tabla de resumen profesional")
+        print("📄 El archivo incluye:")
+        print("   • Logo de la universidad (tamaño optimizado)")
+        print("   • Fuente Computer Modern (soporte completo para español)")
+        print("   • Configuración de página optimizada (sin overflow)")
+        print("   • Sin indentación en párrafos, títulos y comentarios")
+        print("   • Comentarios sin marco (más limpio)")
+        print("   • Colores diferenciados por calificación")
+        print("   • Símbolos para cada ejercicio")
+        print("   • Firma del Prof. Edgar Ortiz")
+        print("   • Tabla de resumen profesional")
     else:
         print("💥 Error al generar PDF")
 

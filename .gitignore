@@ -6,6 +6,7 @@ _logs/
 
 # Ignore any JSON files (student data)
 *.json
+*.csv
 
 *.pdf
 *.tex
@@ -33,3 +34,5 @@ __pycache__/
 
 scores/
 scores/*
+
+.venv/
