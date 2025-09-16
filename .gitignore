@@ -22,7 +22,6 @@ _logs/
 
 *.pdf
 *.html
-*.md
 
 # Ignore any backup files
 *~
